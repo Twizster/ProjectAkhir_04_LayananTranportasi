@@ -1,0 +1,937 @@
+import random
+import datetime
+
+
+riwayat = []
+next_tx_id = 1        
+gopay = 50000
+koin = 0              
+KOIN_VALUE = 1        
+
+vouchers = {
+    "HEMAT10": 0.10,
+    "ONGKIR5": 0.05,
+    "PRABOWO02": 0.12,
+    "JOKOWI01": 0.20,
+    "OMKEGAS": 0.15
+}
+
+
+drivers = [
+    {"nama": "Radit", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Rahmat", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Rudi", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Rusdi", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Dana", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Haris", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Hawin", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Angga", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Farel", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Amba", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Siemoet", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Sapri", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Mamat", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Eko", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Budi", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Ibrahim", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Samsul", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Karim", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Toni", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Ipul", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Yusuf", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Sakti", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Rahim", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Darto", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Wawan", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Roy", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"},
+    {"nama": "Gus", "rating_total": 0, "rating_count": 0, "completed": 0, "status": "ON"}
+]
+
+menu_kategori = {
+    "Snack": {
+        1: ("Keripik Singkong", 7000),
+        2: ("Keripik Pisang", 8000),
+        3: ("Kacang Goreng", 6000),
+        4: ("Roti Keju", 9000),
+        5: ("Donat Mini", 5000),
+        6: ("Biskuit Cokelat", 4500),
+        7: ("Stick Keju", 8000),
+        8: ("Popcorn Manis", 7000),
+        9: ("Kue Lapis", 10000),
+        10: ("Brownies Potong", 12000),
+        11: ("Kue Cubit", 5000),
+        12: ("Pisang Nugget", 9000),
+        13: ("Kentang Goreng", 15000),
+        14: ("Sosis Goreng", 12000),
+        15: ("Bakwan", 8000)
+    },
+    "Instant Food": {
+        1: ("Indomie Goreng", 8000),
+        2: ("Indomie Kuah", 8500),
+        3: ("Mie Sedaap", 9000),
+        4: ("Pop Mie", 10000),
+        5: ("Cup Noodles", 11000),
+        6: ("Bubur Instan", 9000),
+        7: ("Oat Instan", 12000),
+        8: ("Sereal", 15000),
+        9: ("Ramen Instan", 14000),
+        10: ("Sosis Instan", 13000),
+        11: ("Nugget Instan", 20000),
+        12: ("Burger Instant", 18000),
+        13: ("Kentang Goreng Instan", 17000),
+        14: ("Saus Spaghetti", 10000),
+        15: ("Macaroni", 16000)
+    },
+    "Buah-buahan": {
+        1: ("Pisang", 4000),
+        2: ("Apel", 8000),
+        3: ("Jeruk", 6000),
+        4: ("Mangga", 10000),
+        5: ("Anggur", 25000),
+        6: ("Melon (potong)", 12000),
+        7: ("Semangka (potong)", 10000),
+        8: ("Nanas (potong)", 9000),
+        9: ("Strawberry (box)", 30000),
+        10: ("Pepaya", 7000),
+        11: ("Kelengkeng", 15000),
+        12: ("Sirsak", 8000),
+        13: ("Jambu", 6000),
+        14: ("Pir", 14000),
+        15: ("Blueberry (box)", 35000)
+    },
+    "Minuman": {
+        1: ("Es Teh Manis", 5000),
+        2: ("Es Teh Tawar", 4000),
+        3: ("Es Jeruk", 8000),
+        4: ("Air Mineral 600ml", 5000),
+        5: ("Kopi Hitam", 10000),
+        6: ("Kopi Susu", 12000),
+        7: ("Susu Cokelat", 12000),
+        8: ("Jus Alpukat", 18000),
+        9: ("Jus Wortel", 15000),
+        10: ("Smoothie Buah", 20000),
+        11: ("Es Kopi", 15000),
+        12: ("Soda Botol", 10000),
+        13: ("Susu Kedelai", 12000),
+        14: ("Teh Hangat", 4000),
+        15: ("Wedang Jahe", 9000)
+    }
+}
+
+
+def build_flat_menu():
+    flat = {}
+    counter = 1
+    for cat, items in menu_kategori.items():
+        for id_in_cat, (name, price) in items.items():
+            flat[counter] = {"kategori": cat, "id_kategori": id_in_cat, "nama": name, "harga": price}
+            counter += 1
+    return flat
+
+flat_menu = build_flat_menu()
+
+def promo_hari_ini():
+    promo_item_key = random.choice(list(flat_menu.keys()))
+    promo_item = flat_menu[promo_item_key]
+    disc_percent = random.randint(10, 50) 
+    disc_amount = int(promo_item["harga"] * disc_percent / 100)
+    promo_price = promo_item["harga"] - disc_amount
+    print("\n=========================================")
+    print("            PROMO HARI INI              ")
+    print("=========================================")
+    print(f"{promo_item['nama']} ({promo_item['kategori']})")
+    print(f"Harga normal : Rp {promo_item['harga']}")
+    print(f"Diskon       : {disc_percent}%  -> Rp {disc_amount}")
+    print(f"Harga promo  : Rp {promo_price}")
+    print("=========================================")
+    return promo_item_key, promo_price
+
+def rata_rating(d):
+    if d["rating_count"] == 0:
+        return 0.0
+    return d["rating_total"] / d["rating_count"]
+
+def tampilkan_driver(show_index=True):
+    print("\n=========== DAFTAR DRIVER ===========")
+    print(f"{'ID':<4} {'Nama':<13} {'Status':<7} {'Rating':<7} {'Trip'}")
+    print("-" * 45)
+    for i, d in enumerate(drivers, 1):
+        if show_index:
+            print(f"{i:<4} {d['nama']:<13} {d['status']:<7} {rata_rating(d):<7.2f} {d['completed']}")
+        else:
+            print(f"{d['nama']:<13} {d['status']:<7} {rata_rating(d):<7.2f} {d['completed']}")
+    print("=" * 45)
+
+
+def pilih_driver_auto():
+    on_drivers = [d for d in drivers if d["status"] == "ON"]
+    if not on_drivers:
+        driver = random.choice(drivers)
+    else:
+        driver = random.choice(on_drivers)
+    driver["status"] = "SIBUK"
+    print(f"Driver ditemukan (auto): {driver['nama']} (status SIBUK sekarang)")
+    return driver["nama"]
+
+def set_driver_status(nama, status):
+    for d in drivers:
+        if d["nama"].lower() == nama.lower():
+            d["status"] = status
+            return
+        
+
+def search_driver_nearby():
+    jumlah_opsi = random.choice([2,3,6,7])
+    eligible = [d for d in drivers if d["status"] == "ON"]
+    if len(eligible) < jumlah_opsi:
+        pool = drivers[:]
+    else:
+        pool = eligible 
+
+    pilihan_driver = random.sample(pool, min(jumlah_opsi, len(pool)))
+    jarak_options = [2000, 3000, 6000, 7000, 250, 500, 1200]
+    hasil = []
+    for d in pilihan_driver:
+        jarak_m = random.choice(jarak_options)
+        hasil.append((d, jarak_m))
+
+    print("\n--- Driver Terdekat Sekitar Anda ---")
+    print(f"{'No':<3} {'Nama':<12} {'Jarak':<12} {'Status':<7} {'Rating'}")
+    print("-" * 40)
+    for i, (d, jarak_m) in enumerate(hasil, 1):
+        km = jarak_m / 1000
+        print(f"{i:<3} {d['nama']:<12} {jarak_m:>5} m ({km:.1f} km)  {d['status']:<6} {rata_rating(d):.2f}")
+    print("-" * 40)
+
+    while True:
+        pilih = input(f"Pilih driver (1-{len(hasil)}) atau 'b' batal: ")
+        if pilih.lower() == 'b':
+            return None
+        if not pilih.isdigit():
+            print("Input harus angka atau 'b'!")
+            continue
+        idx = int(pilih)
+        if 1 <= idx <= len(hasil):
+            driver_obj = hasil[idx-1][0]
+            driver_obj["status"] = "SIBUK"
+            print(f"Driver {driver_obj['nama']} dipilih (status berubah jadi SIBUK).")
+            return driver_obj["nama"]
+        else:
+            print("Pilihan di luar jangkauan!")
+
+def pilih_driver_manual_by_id():
+    tampilkan_driver(show_index=True)
+    while True:
+        id_raw = input("Masukkan ID driver yang ingin dipilih (atau 'b' untuk batal): ")
+        if id_raw.lower() == 'b':
+            return None
+        if not id_raw.isdigit():
+            print("ID harus angka!")
+            continue
+        idx = int(id_raw) - 1
+        if 0 <= idx < len(drivers):
+            d = drivers[idx]
+            if d["status"] != "ON":
+                print(f"Perhatian: driver {d['nama']} status {d['status']}. Tetap pilih? (y/n)")
+                ok = input().lower()
+                if ok != 'y':
+                    return None
+            d["status"] = "SIBUK"
+            print(f"Driver {d['nama']} dipilih (status SIBUK).")
+            return d["nama"]
+        else:
+            print("ID tidak valid!")
+
+
+def komplain_rating(nama_driver):
+    global riwayat
+    print("\n======================================")
+    print("         RATING & KOMPLAIN DRIVER     ")
+    print("======================================")
+
+    while True:
+        rating = input("Masukkan rating (1-10): ")
+        if rating.isdigit():
+            rating_int = int(rating)
+            if 1 <= rating_int <= 10:
+                break
+        print("Rating harus angka antara 1 sampai 10!")
+
+    komplain = input("Masukkan komplain (opsional, tekan Enter jika tidak ada): ")
+
+    found = False
+    for d in drivers:
+        if d["nama"].lower() == nama_driver.lower():
+            d["rating_total"] += rating_int
+            d["rating_count"] += 1
+            found = True
+            break
+
+    riwayat.append({
+        "id": next_tx(),
+        "jenis": "Komplain_Rating",
+        "driver": nama_driver,
+        "rating": rating_int,
+        "komplain": komplain,
+        "status": "dikirim",
+        "waktu": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    })
+
+    print("--------------------------------------")
+    if found:
+        print(f"Terima kasih! Rating {rating_int} untuk {nama_driver} sudah tersimpan.")
+    else:
+        print("Peringatan: driver tidak ditemukan, komplain tetap disimpan di riwayat.")
+    print("--------------------------------------")
+
+
+
+def beri_koin_jarak(jarak):
+    global koin
+    if jarak < 5:
+        bonus = 2
+    elif jarak < 10:
+        bonus = 5
+    elif jarak < 20:
+        bonus = 10
+    else:
+        bonus = 20
+    koin += bonus
+    print(f"Kamu mendapat {bonus} koin afinitas! (Total koin: {koin})")
+
+def lihat_koin_menu():
+    global koin, gopay
+    while True:
+        print("\n=========================================")
+        print("             KOIN AFINITAS               ")
+        print("=========================================")
+        print(f"Jumlah koin: {koin}")
+        print(f"Konversi: 1 koin = Rp {KOIN_VALUE}")
+        print("-----------------------------------------")
+        print("1. Tukar koin ke GoPay")
+        print("2. Kembali")
+        pilihan = input("Pilih (1-2): ")
+        if pilihan == "1":
+            if koin <= 0:
+                print("Tidak ada koin untuk ditukar.")
+                continue
+            while True:
+                use_raw = input(f"Masukkan jumlah koin yang ingin ditukar (max {koin}): ")
+                if not use_raw.isdigit():
+                    print("Harus angka!")
+                    continue
+                use = int(use_raw)
+                if use <= 0 or use > koin:
+                    print("Jumlah koin tidak valid!")
+                    continue
+                nilai = use * KOIN_VALUE
+                if use >= 100:
+                    potongan = int(nilai * 0.01)
+                    nilai_setelah = nilai - potongan
+                    print(f"Karena menukar >=100 koin, dikenakan potongan 1% = Rp {potongan}.")
+                else:
+                    nilai_setelah = nilai
+                konfirm = input(f"Tukar {use} koin -> Rp {nilai_setelah}? (y/n): ").lower()
+                if konfirm == 'y':
+                    koin -= use
+                    gopay += nilai_setelah
+                    print(f"Tukar berhasil! Sisa koin: {koin}. Saldo GoPay: Rp {gopay}")
+                    break
+                else:
+                    print("Tukar dibatalkan.")
+                    break
+        elif pilihan == "2":
+            return
+        else:
+            print("Input salah!")
+
+
+
+def next_tx():
+    global next_tx_id
+    nid = next_tx_id
+    next_tx_id += 1
+    return nid
+
+
+def cetak_struk_goride(tx):
+    print("\n" + "="*40)
+    print("                 STRUK GO-RIDE           ")
+    print("="*40)
+    print(f"ID Transaksi : {tx['id']}")
+    print(f"Waktu        : {tx.get('waktu','-')}")
+    print(f"Jenis        : GoRide")
+    print(f"Driver       : {tx.get('driver','-')}")
+    print(f"Jarak (km)   : {tx.get('jarak',0)}")
+    print(f"Total bayar  : Rp {tx.get('total',0)}")
+    print("="*40)
+
+def cetak_struk_gofood(tx):
+    print("\n" + "="*40)
+    print("                 STRUK GO-FOOD           ")
+    print("="*40)
+    print(f"ID Transaksi : {tx['id']}")
+    print(f"Waktu        : {tx.get('waktu','-')}")
+    print("Items:")
+    for cat, nama, h in tx.get('makanan', []):
+        print(f"  - [{cat}] {nama:<20} Rp {h}")
+    print("-"*40)
+    print(f"Total bayar  : Rp {tx.get('total',0)}")
+    print("="*40)
+
+
+def proses_bayar_gopay(total):
+    global gopay, koin
+    percobaan = 0
+    while percobaan < 3:
+        print("\n-----------------------------------------")
+        print(f"Saldo GoPay saat ini: Rp {gopay}")
+        used_coins = 0
+        if koin > 0:
+            while True:
+                pakai_koin = input(f"Gunakan koin afinitas? (y/n) [1 koin = Rp {KOIN_VALUE}]: ").lower()
+                if pakai_koin in ("y", "n"):
+                    break
+                print("Input harus 'y' atau 'n'!")
+            if pakai_koin == "y":
+                while True:
+                    use = input(f"Masukkan jumlah koin yang ingin dipakai (max {koin}): ")
+                    if not use.isdigit():
+                        print("Harus angka!")
+                        continue
+                    use = int(use)
+                    if 0 <= use <= koin:
+                        diskon_koin = use * KOIN_VALUE
+                        total_after_koin = max(0, total - diskon_koin)
+                        print(f"Diskon koin: Rp {diskon_koin}. Total setelah koin: Rp {total_after_koin}")
+                        confirm = input("Lanjut pakai koin untuk pembayaran? (y/n): ").lower()
+                        if confirm == "y":
+                            used_coins = use
+                            total = total_after_koin
+                            break
+                        else:
+                            used_coins = 0
+                            break
+                    else:
+                        print("Jumlah koin tidak valid!")
+        print("-----------------------------------------")
+        bayar = input("Masukkan nominal pembayaran GoPay: ")
+        if not bayar.isdigit():
+            print("Nominal harus angka!")
+            percobaan += 1
+            continue
+        bayar = int(bayar)
+
+        if bayar < total:
+            print(f"Nominal kurang! Percobaan {percobaan+1}/3")
+            percobaan += 1
+            continue
+
+        if bayar > gopay:
+            print("Nominal melebihi saldo GoPay! Masukkan nominal <= saldo!")
+            percobaan += 1
+            continue
+
+        kembalian = bayar - total
+        gopay -= bayar
+        if kembalian > 0:
+            gopay += kembalian
+            print(f"Kembalian Rp {kembalian} dikembalikan ke GoPay.")
+        if used_coins > 0:
+            koin -= used_coins
+            print(f"{used_coins} koin berhasil dipakai. Sisa koin: {koin}")
+        print(f"Pembayaran GoPay berhasil! Sisa GoPay: Rp {gopay}")
+        return True
+    print("Gagal pembayaran GoPay setelah 3 kali percobaan.")
+    return False
+
+def proses_bayar_tunai(total):
+    percobaan = 0
+    while percobaan < 3:
+        uang = input("Masukkan uang tunai yang diberikan: ")
+        if not uang.isdigit():
+            print("Nominal harus angka!")
+            percobaan += 1
+            continue
+        uang = int(uang)
+        if uang < total:
+            print(f"Uang kurang Rp {total - uang}. Percobaan {percobaan+1}/3")
+            percobaan += 1
+            continue
+        kembalian = uang - total
+        print("\n==== STRUK PEMBAYARAN TUNAI ====")
+        print(f"Total Belanja : Rp {total}")
+        print(f"Uang Dibayar  : Rp {uang}")
+        print(f"Kembalian     : Rp {kembalian}")
+        print("================================")
+        return True
+    print("Gagal pembayaran tunai setelah 3 percobaan.")
+    return False
+
+def pembayaran(total):
+    global gopay
+    print("\n=========================================")
+    print("                PEMBAYARAN               ")
+    print("=========================================")
+    print("1. GoPay")
+    print("2. Tunai")
+    print("-----------------------------------------")
+    while True:
+        metode = input("Pilih metode pembayaran (1-2): ")
+        if metode not in ("1", "2"):
+            print("Input harus 1 atau 2!")
+        else:
+            break
+    print("-----------------------------------------")
+    print(f"Total yang harus dibayar : Rp {total}")
+    print("-----------------------------------------")
+    if metode == "1":
+        sukses = proses_bayar_gopay(total)
+        if not sukses:
+            while True:
+                t = input("Saldo tidak mencukupi. Ingin top up sekarang? (y/n): ").lower()
+                if t in ("y","n"):
+                    break
+                print("Input harus 'y' atau 'n'!")
+            if t == "y":
+                topup_gopay()
+                return pembayaran(total)
+            else:
+                print("Pembayaran dibatalkan.")
+                return False
+        return True
+    else:
+        sukses = proses_bayar_tunai(total)
+        if not sukses:
+            print("Pembayaran tunai gagal. Transaksi dibatalkan.")
+            return False
+        return True
+
+
+
+def hitung_tarif(jarak_km):
+    return int(jarak_km * 3000)
+
+def fitur_goride():
+    global riwayat, koin
+    print("\n======================================")
+    print("               GO-RIDE                ")
+    print("======================================")
+
+    print("Pilih metode mendapatkan driver:")
+    print("1. Otomatis pilih driver")
+    print("2. Cari driver terdekat")
+    print("3. Pilih manual dari daftar driver (masukkan ID)")
+    while True:
+        cara = input("Pilih (1-3): ")
+        if cara not in ("1","2","3"):
+            print("Input salah!")
+            continue
+        break
+
+    if cara == "1":
+        nama_driver = pilih_driver_auto()
+    elif cara == "2":
+        nama_driver = search_driver_nearby()
+        if nama_driver is None:
+            print("Pencarian dibatalkan. Kembali ke menu.")
+            return
+    else:
+        nama_driver = pilih_driver_manual_by_id()
+        if nama_driver is None:
+            print("Pilihan manual dibatalkan. Kembali ke menu.")
+            return
+
+    print("--------------------------------------")
+    while True:
+        jarak_raw = input("Masukkan jarak (km) untuk perhitungan tarif (contoh: 2.5): ")
+        try:
+            jarak = float(jarak_raw)
+            if jarak <= 0:
+                print("Jarak harus > 0!")
+                continue
+            break
+        except:
+            print("Input harus angka! (contoh: 2.5)")
+
+    biaya = hitung_tarif(jarak)
+    print("--------------------------------------")
+    print(f"Biaya awal: Rp {biaya}")
+
+    while True:
+        pakai = input("Pakai voucher? (y/n): ").lower()
+        if pakai in ("y","n"):
+            break
+        print("Input harus 'y' atau 'n'!")
+    if pakai == "y":
+        kode = input("Masukkan kode voucher: ").upper()
+        if kode in vouchers:
+            diskon = int(biaya * vouchers[kode])
+            biaya -= diskon
+            print(f"Voucher diterima! Diskon Rp {diskon}")
+        else:
+            print("Voucher tidak valid.")
+    print("--------------------------------------")
+    print(f"Total bayar : Rp {biaya}")
+    print("--------------------------------------")
+
+    berhasil = pembayaran(biaya)
+    if not berhasil:
+        set_driver_status(nama_driver, "ON")
+        return
+
+    txid = next_tx()
+    waktu = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    transaksi = {
+        "id": txid,
+        "jenis": "GoRide",
+        "driver": nama_driver,
+        "jarak": jarak,
+        "total": biaya,
+        "waktu": waktu
+    }
+    riwayat.append(transaksi)
+    print(f"Transaksi ID: {txid} tercatat. Simpan ID untuk komplain jika perlu.")
+
+    beri_koin_jarak(jarak)
+
+    for d in drivers:
+        if d["nama"].lower() == nama_driver.lower():
+            d["completed"] += 1
+            set_driver_status(nama_driver, "ON")
+            break
+
+
+    cetak_struk_goride(transaksi)
+
+    while True:
+        t = input("Ingin beri rating/komplain sekarang? (y/n): ").lower()
+        if t in ("y","n"):
+            break
+        print("Input harus 'y' atau 'n'!")
+    if t == "y":
+        komplain_rating(nama_driver)
+
+
+def tampilkan_menu_kategori():
+    print("\n========== KATEGORI MAKANAN ==========")
+    for i, cat in enumerate(menu_kategori.keys(), 1):
+        print(f"{i}. {cat}")
+    print("======================================")
+
+def tampilkan_detail_kategori(cat_name):
+    items = menu_kategori[cat_name]
+    print(f"\n===== {cat_name.upper()} =====")
+    print(f"{'No':<3} {'Nama':<24} {'Harga'}")
+    print("-" * 40)
+    for k, (nama, harga) in items.items():
+        print(f"{k:<3} {nama:<24} Rp {harga}")
+    print("-" * 40)
+
+def fitur_gofood():
+    global riwayat
+    print("\n======================================")
+    print("               GO-FOOD                ")
+    print("======================================")
+
+    pesanan = []
+    total = 0
+
+    while True:
+        tampilkan_menu_kategori()
+        cat_choice = input("Pilih kategori (angka): ")
+        if not cat_choice.isdigit() or not (1 <= int(cat_choice) <= len(menu_kategori)):
+            print("Input salah!")
+            continue
+        cat_index = int(cat_choice) - 1
+        cat_name = list(menu_kategori.keys())[cat_index]
+        tampilkan_detail_kategori(cat_name)
+
+        while True:
+            pilih = input("Pilih nomor makanan (atau 'b' untuk kembali kategori): ")
+            if pilih.lower() == 'b':
+                break
+            if not pilih.isdigit() or int(pilih) not in menu_kategori[cat_name]:
+                print("Input salah!")
+                continue
+            no = int(pilih)
+            nama, harga = menu_kategori[cat_name][no]
+            pesanan.append((cat_name, nama, harga))
+            total += harga
+            print(f"Ditambahkan: {nama} - Rp {harga}")
+
+            t = input("Tambah lagi di kategori ini? (y/n): ").lower()
+            if t == "n":
+                break
+
+        lagi_cat = input("Pilih kategori lain? (y/n): ").lower()
+        if lagi_cat == "n":
+            break
+
+    if not pesanan:
+        print("Tidak ada pesanan. Batal.")
+        return
+
+    print("\n=========== RINCIAN PESANAN ===========")
+    for cat, nama, h in pesanan:
+        print(f"[{cat}] {nama:<20} Rp {h}")
+    print("---------------------------------------")
+    print(f"TOTAL BELANJA: Rp {total}")
+    print("---------------------------------------")
+
+    berhasil = pembayaran(total)
+    if not berhasil:
+        return
+
+    txid = next_tx()
+    waktu = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    transaksi = {
+        "id": txid,
+        "jenis": "GoFood",
+        "makanan": pesanan,
+        "total": total,
+        "waktu": waktu
+    }
+    riwayat.append(transaksi)
+    print(f"Transaksi ID: {txid} tercatat. Simpan ID untuk komplain jika perlu.")
+
+    cetak_struk_gofood(transaksi)
+
+
+def customer_service():
+    print("\n======================================")
+    print("           CUSTOMER SERVICE           ")
+    print("======================================")
+    print("Pilih kategori keluhan:")
+    print("1. GoFood")
+    print("2. GoRide")
+    print("3. GoPay")
+    print("4. Kembali")
+    print("--------------------------------------")
+    pilih = input("Pilih (1-4): ")
+    if pilih not in ("1","2","3","4"):
+        print("Input salah!")
+        return
+    if pilih == "4":
+        return
+
+    tx_id_raw = input("Masukkan ID transaksi (lihat riwayat): ")
+    if not tx_id_raw.isdigit():
+        print("ID harus angka!")
+        return
+    tx_id = int(tx_id_raw)
+    tx = None
+    for r in riwayat:
+        if r.get("id") == tx_id:
+            tx = r
+            break
+    if not tx:
+        print("Transaksi dengan ID tersebut tidak ditemukan!")
+        return
+
+    if pilih == "1":
+        print("\n--- Keluhan GoFood ---")
+        print("1. Pesanan salah (jumlah/topping tidak sesuai)")
+        print("2. Pesanan lama / sebagian tidak diterima")
+        print("3. Pesanan rusak (makanan tumpah / kemasan bocor)")
+        print("--------------------------------------")
+        tipe = input("Pilih jenis keluhan (1-3): ")
+        if tipe not in ("1","2","3"):
+            print("Input salah!")
+            return
+        pesan = input("Tulis pesan untuk customer service (detail masalah): ")
+        riwayat.append({
+            "id": next_tx(),
+            "jenis": "CS_GoFood",
+            "tx_refer": tx_id,
+            "tipe": tipe,
+            "pesan": pesan,
+            "status": "dilapor",
+            "waktu": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+        print("Keluhan GoFood berhasil dikirim. CS akan menindaklanjuti dan kemungkinan penggantian makanan.")
+    elif pilih == "2":
+        print("\n--- Keluhan GoRide ---")
+        print("1. Driver salah tujuan / rute jauh")
+        print("2. Driver tidak profesional (ugal-ugalan / merokok)")
+        print("3. Kendaraan tidak layak (helm kotor / motor rusak)")
+        print("--------------------------------------")
+        tipe = input("Pilih jenis keluhan (1-3): ")
+        if tipe not in ("1","2","3"):
+            print("Input salah!")
+            return
+        pesan = input("Tulis pesan untuk customer service (detail masalah): ")
+        riwayat.append({
+            "id": next_tx(),
+            "jenis": "CS_GoRide",
+            "tx_refer": tx_id,
+            "tipe": tipe,
+            "pesan": pesan,
+            "status": "dilapor",
+            "waktu": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+        print("Keluhan GoRide berhasil dikirim. CS akan menindaklanjuti dan memberikan kompensasi jika perlu.")
+    else:
+        print("\n--- Keluhan GoPay ---")
+        print("1. Top up gagal")
+        print("2. Saldo hilang")
+        print("--------------------------------------")
+        tipe = input("Pilih jenis keluhan (1-2): ")
+        if tipe not in ("1","2"):
+            print("Input salah!")
+            return
+        pesan = input("Tulis pesan untuk customer service (detail masalah): ")
+        riwayat.append({
+            "id": next_tx(),
+            "jenis": "CS_GoPay",
+            "tx_refer": tx_id,
+            "tipe": tipe,
+            "pesan": pesan,
+            "status": "dilapor",
+            "waktu": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+        print("Keluhan GoPay berhasil dikirim. CS akan menindaklanjuti.")
+
+
+def lihat_riwayat(tabel_rapi=True):
+    print("\n======================================")
+    print("              RIWAYAT                 ")
+    print("======================================")
+    if not riwayat:
+        print("Belum ada riwayat transaksi.")
+        print("======================================")
+        return
+    print(f"{'ID':<5} {'Waktu':<19} {'Jenis':<15} {'Ringkasan'}")
+    print("-" * 70)
+    for r in riwayat:
+        wid = r.get('id', '-')
+        waktu = r.get('waktu', '-')
+        jenis = r.get('jenis', '-')
+        if jenis == "GoRide":
+            ring = f"Driver:{r.get('driver','-')} | {r.get('jarak',0)} km | Rp {r.get('total',0)}"
+        elif jenis == "GoFood":
+            makanan_list = ", ".join([f"{m[1]}({m[2]})" for m in r.get('makanan', [])])
+            ring = f"Items:{makanan_list} | Rp {r.get('total',0)}"
+        else:
+            ring = r.get('pesan', r.get('komplain', '-'))
+            if 'tx_refer' in r:
+                ring = f"Refer:{r.get('tx_refer')} | {ring}"
+        print(f"{wid:<5} {waktu:<19} {jenis:<15} {ring}")
+    print("=" * 70)
+
+def hapus_riwayat_by_id():
+    global riwayat
+    if not riwayat:
+        print("Riwayat kosong, tidak ada yang dihapus.")
+        return
+    id_raw = input("Masukkan ID riwayat yang ingin dihapus: ")
+    if not id_raw.isdigit():
+        print("ID harus angka!")
+        return
+    idn = int(id_raw)
+    for i, r in enumerate(riwayat):
+        if r.get('id') == idn:
+            konfirm = input(f"Yakin hapus riwayat ID {idn}? (y/n): ").lower()
+            if konfirm == 'y':
+                riwayat.pop(i)
+                print(f"Riwayat ID {idn} berhasil dihapus.")
+            else:
+                print("Penghapusan dibatalkan.")
+            return
+    print("ID tidak ditemukan di riwayat.")
+
+def reset_riwayat():
+    global riwayat
+    if not riwayat:
+        print("Riwayat sudah kosong.")
+        return
+    konfirm = input("Yakin reset (hapus semua) riwayat? (y/n): ").lower()
+    if konfirm == 'y':
+        riwayat = []
+        print("Semua riwayat berhasil dihapus.")
+    else:
+        print("Reset dibatalkan.")
+
+
+def topup_gopay():
+    global gopay
+    print("\n=========== TOP UP GOPAY ===========")
+    while True:
+        nominal = input("Masukkan nominal top up: ")
+        if nominal.isdigit() and int(nominal) > 0:
+            nominal = int(nominal)
+            break
+        print("Nominal harus angka dan > 0!")
+    gopay += nominal
+    print(f"Top up berhasil! Saldo GoPay sekarang: Rp {gopay}")
+
+
+def menu():
+    while True:
+        print("\n======================================")
+        print("              MENU UTM-RIDE           ")
+        print("======================================")
+        print("1. GoRide")
+        print("2. GoFood")
+        print("3. Lihat Riwayat")
+        print("4. Cek Saldo GoPay")
+        print("5. Top Up GoPay")
+        print("6. Lihat Driver")
+        print("7. Promo Hari Ini")
+        print("8. Lihat Koin Afinitas")
+        print("9. Customer Service")
+        print("10. Keluar")
+        print("======================================")
+        pilih = input("Pilih menu (angka): ")
+        if pilih == "1":
+            fitur_goride()
+        elif pilih == "2":
+            fitur_gofood()
+        elif pilih == "3":
+            while True:
+                print("\n--- MENU RIWAYAT ---")
+                print("1. Tampilkan riwayat")
+                print("2. Hapus riwayat by ID")
+                print("3. Reset semua riwayat")
+                print("4. Kembali")
+                sub = input("Pilih (1-4): ")
+                if sub == "1":
+                    lihat_riwayat()
+                elif sub == "2":
+                    hapus_riwayat_by_id()
+                elif sub == "3":
+                    reset_riwayat()
+                elif sub == "4":
+                    break
+                else:
+                    print("Input salah!")
+        elif pilih == "4":
+            print(f"\nSaldo GoPay: Rp {gopay}")
+        elif pilih == "5":
+            topup_gopay()
+        elif pilih == "6":
+            tampilkan_driver()
+            while True:
+                t = input("Mau cari driver terdekat sekarang? (y/n): ").lower()
+                if t in ("y","n"):
+                    break
+                print("Input harus 'y' atau 'n'!")
+            if t == 'y':
+                nd = search_driver_nearby()
+                if nd:
+                    print(f"Driver {nd} siap dipilih untuk perjalanan.")
+        elif pilih == "7":
+            promo_hari_ini()
+        elif pilih == "8":
+            lihat_koin_menu()
+        elif pilih == "9":
+            customer_service()
+        elif pilih == "10":
+            print("Terima kasih telah menggunakan UTM-RIDE!")
+            break
+        else:
+            print("Input salah! Pilih angka menu yang tersedia.")
+ 
+
+if __name__ == "__main__":
+    menu()
